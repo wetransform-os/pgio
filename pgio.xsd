@@ -1,0 +1,711 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:pgio="http://www.planninggraph.io/pgio/0.2/" elementFormDefault="qualified" targetNamespace="http://www.planninggraph.io/pgio/0.2/">
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+  <element name="Parcel" substitutionGroup="gml:AbstractFeature" type="pgio:ParcelType">
+    <annotation>
+      <documentation>
+        A cadastral parcel, derived from ALKIS AX_Flurstueck. References buildings, plans and relevant other data. 
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="ParcelType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="bplanRegulations" nillable="true" type="pgio:BPlanRegulationsPropertyType">
+			<annotation>
+			  <documentation>
+				The regulations applied to this parcel as per the respective Development Plans (Bebauungspläne/Bauleitpläne). There may be more than one plan if changes ("Änderungen") are in effect. In that case, the specific regulation in the newest plan has to take precedence.
+			  </documentation>
+			</annotation>
+		  </element>
+          <element form="unqualified" maxOccurs="1" minOccurs="0" name="fplanRegulations" nillable="true" type="pgio:FPlanRegulationsPropertyType">
+			<annotation>
+			  <documentation>
+				The regulations applied to this parcel as per the respective Land-Use Plans (Flächennutzungspläne). Regulations from FPlans do not have the same immediately binding effect as those in BPlans, but can serve as a sanity check or fallback if other information is not available.
+			  </documentation>
+			</annotation>
+		  </element>
+          <element form="unqualified" maxOccurs="1" minOccurs="0" name="buildings" nillable="true" type="pgio:BuildingPropertyType">
+			<annotation>
+			  <documentation>
+				The buildings that are on this Parcel. It is assumed that a Building is on one Parcel, and it is thus encoded in place.
+			  </documentation>
+			</annotation>
+		  </element>
+          <element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="transportServices" nillable="true" type="pgio:ProximityReferencePropertyType">
+			<annotation>
+			  <documentation>
+				References to transport infrastructure such as road, railway, buses and others close by or connected to this Parcel. 
+			  </documentation>
+			</annotation>
+		  </element>
+          <element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="utilityServices" nillable="true" type="pgio:ProximityReferencePropertyType">
+			<annotation>
+			  <documentation>
+				References to utility infrastructure such as broadband, water, sewers and others close by or connected to this Parcel. 
+			  </documentation>
+			</annotation>
+		  </element>
+          <element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="governmentalServices" nillable="true" type="pgio:ProximityReferencePropertyType">
+			<annotation>
+			  <documentation>
+				References to governmental public infrastructure such as schools, citizen's offices, playgrounds, swimming pools and others close by or connected to this Parcel. 
+			  </documentation>
+			</annotation>
+		  </element>
+          <element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="natureServices" nillable="true" type="pgio:ProximityReferencePropertyType">
+			<annotation>
+			  <documentation>
+				References to nature services such as forests, water bodies, protected areas and other features contributing to a high-quality environment. 
+			  </documentation>
+			</annotation>
+		  </element>
+          <element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="marketData" nillable="true" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				References to relevant transaction and valuation data, such as "Bodenrichtwerte". 
+			  </documentation>
+			</annotation>
+		  </element>
+          <element form="unqualified" maxOccurs="1" minOccurs="1" name="geometry" nillable="false" type="gml:SurfacePropertyType">
+			<annotation>
+			  <documentation>
+				The geometry of this parcel, as a MultiSurface (MultiPolygon when encoded in GeoJSON). 
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="1" name="officialArea" nillable="false" type="double">
+			<annotation>
+			  <documentation>
+				The official area of this parcel, in m².
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="parcelNumber" nillable="false" type="string">
+			<annotation>
+			  <documentation>
+				The parcel number, usually in a format such as 7 / 203, unique only within a local cadaster
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="1" name="parcelID" nillable="false" type="string">
+			<annotation>
+			  <documentation>
+				The parcel id, unique within the full data set
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="1" name="municipalityKey" nillable="false" type="string">
+			<annotation>
+			  <documentation>
+				The ISO country code prefixed municipality key. For Germany, given as an "AGS" (Amtliche Gemeindeschlüssel, see https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/_inhalt.html).
+				Example: DE08111000
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="1" name="economicType" nillable="true" type="string">
+			<annotation>
+			  <documentation>
+				The parcel land-use type, derived from AX_FlurstueckGrundbuch.wirtschaftsart, using the values from AX_WirtschaftsartGrundbuchType (Wohnbaufläche, Industrie- und Gewerbefläche, Mischnutzung, Gebäude- und Freifläche Land- und Forstwirtschaft, Erholungsfläche, Friedhof, Verkehrsfläche, Landwirtschaftsfläche, Waldfläche, Sonstige Vegetationsfläche, Unland, Wasserfläche)
+			  </documentation>
+			</annotation>
+		  </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="ProximityReferencePropertyType">
+    <sequence minOccurs="0">
+      <element ref="pgio:ProximityReference" maxOccurs="1" />
+    </sequence>
+  </complexType>
+  <element name="ProximityReference" type="pgio:ProximityReferenceType">
+    <annotation>
+      <documentation>
+        A reference to a resource that is in proximity. Extends the normal gml:reference with information on distance in time and space.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="ProximityReferenceType">
+    <complexContent>
+      <extension base="gml:ReferenceType">
+        <sequence>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="distanceWalking" nillable="false" type="double">
+		    <annotation>
+		      <documentation>
+		        The distance to the referenced object when walking, in meters.
+		      </documentation>
+		    </annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="timeWalking" nillable="false" type="integer">
+		    <annotation>
+		      <documentation>
+		        The time to the referenced object when walking, in seconds.
+		      </documentation>
+		    </annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="distanceRoad" nillable="false" type="double">
+		    <annotation>
+		      <documentation>
+		        The distance to the referenced object when using road vehicles, in meters.
+		      </documentation>
+		    </annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="timeRoad" nillable="false" type="integer">
+		    <annotation>
+		      <documentation>
+		        The time to the referenced object when using road vehices, in seconds.
+		      </documentation>
+		    </annotation>
+		  </element>
+		</sequence>
+	  </extension>
+    </complexContent>
+  </complexType>
+  
+  <complexType name="BuildingPropertyType">
+    <sequence minOccurs="0">
+      <element ref="pgio:Building" maxOccurs="unbounded" />
+    </sequence>
+  </complexType>
+  <element name="Building" substitutionGroup="gml:AbstractFeature" type="pgio:BuildingType">
+    <annotation>
+      <documentation>
+        A building, derived from ALKIS `AX_Gebaeude`, alternatively from CityGML `Building` or from INSPIRE-BU2D `Building`.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="BuildingType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element form="unqualified" maxOccurs="1" minOccurs="1" name="geometry" nillable="false" type="gml:SurfacePropertyType">
+			<annotation>
+			  <documentation>
+				The geometry of this building footprint, as a `MultiSurface` (`MultiPolygon` when encoded in GeoJSON). 
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="1" name="sourceOfParams" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The source of the parameters included in this building object. Can be one of the following:
+				- pgio:SourceOfParams:CityGMLOrINSPIRE (meaning that the values are derived from the respective enumerations and may contain mismatches)
+				- pgio:SourceOfParams:OtherStructuredData (meaning there may be other definitions used)
+				- pgio:SourceOfParams:AutomatedExtraction (meaning there may be errors in the values, because these were extracted from raster plans, LiDAR, Orthoimagery and similar unstructured data using automated methods)
+				- pgio:SourceOfParams:Unknown (meaning the source is not documented)
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="levelsAboveGround" nillable="false" type="integer">
+			<annotation>
+			  <documentation>
+				The number of floors/levels above ground in this building. 
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="levelsBelowGround" nillable="false" type="integer">
+			<annotation>
+			  <documentation>
+				The number of floors/levels below ground in this building.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="volume" nillable="false" type="double">
+			<annotation>
+			  <documentation>
+				The total volume/mass of this building in m3.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="grossFloorArea" nillable="false" type="double">
+			<annotation>
+			  <documentation>
+				The total gross floor area of this building in m2.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="function" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The (current) function of this building. Can be one of the following:
+				- A value from https://inspire.ec.europa.eu/codelist/CurrentUseValue
+				- A value from the CityGML 2.x usage enumeration (https://www.sig3d.org/codelists/standard/building/2.0/_AbstractBuilding_usage.xml)
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="roofType" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The roof type of this building. Can be one of the textual values from XPlanung 6.x "BP_Dachgestaltung":
+				1000 (Flachdach)
+				2100 (Pultdach)
+				2200 (Versetztes Pultdach)
+				3100 (Satteldach)
+				3200 (Walmdach)
+				3300 (Krueppelwalmdach) 
+				3400 (Mansarddach)
+				3500 (Zeltdach) 
+				3600 (Kegeldach) 
+				3700 (Kuppeldach) 
+				3800 (Sheddach) 
+				3900 (Bogendach) 
+				4000 (Turmdach) 
+				5000 (Mischform) 
+				9999 (Sonstige Dachform) 
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="eaveHeight" nillable="false" type="double">
+			<annotation>
+			  <documentation>
+				The eave height (Traufhöhe) of this building, in m², over the footprint height.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="ridgeHeight" nillable="false" type="double">
+			<annotation>
+			  <documentation>
+				The ridge height (Firsthöhe) of this building, in m², over the footprint height.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="yearOfConstruction" nillable="false" type="integer">
+			<annotation>
+			  <documentation>
+				The year as an integer in which this building was initially constructed.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="yearOfRenovation" nillable="false" type="integer">
+			<annotation>
+			  <documentation>
+				The year as an integer in which this building was last renovated substantially.
+			  </documentation>
+			</annotation>
+		  </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+  <complexType name="BPlanRegulationsPropertyType">
+    <sequence minOccurs="0">
+      <element ref="pgio:BPlanRegulations" maxOccurs="1" />
+    </sequence>
+  </complexType>
+  <element name="BPlanRegulations" type="pgio:BPlanRegulationsType">
+    <annotation>
+      <documentation>
+        A set of regulations, derived from the respective XPlanung 6.x Feature Types from the Modellbereich BP_Plan.BP_Bebauung, such as BP_WohngebaeudeFlaeche or BP_GemeinschaftsanlagenFlaeche 
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="BPlanRegulationsType">
+	<sequence>
+		<element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="useTypes" nillable="false" type="gml:ReferenceType">
+		  <annotation>
+			<documentation>
+			The allowed use types according to the referenced plan. Can be one of the textual values from XPlanung 6.x "XP_AllgArtDerBaulNutzung":
+			1000 (WohnBauflaeche): Wohnbaufläche nach §1 Abs. (1) BauNVO 
+			2000 (GemischteBauflaeche): Gemischte Baufläche nach §1 Abs. (1) BauNVO. 
+			3000 (GewerblicheBauflaeche): Gewerbliche Baufläche nach §1 Abs. (1) BauNVO. 
+			4000 (SonderBauflaeche): Sonderbaufläche nach §1 Abs. (1) BauNVO. 
+			9999 (SonstigeBauflaeche): Sonstige Baufläche
+			</documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="specificUseType" nillable="false" type="gml:ReferenceType">
+		  <annotation>
+			<documentation>
+			The allowed specific use types according to the referenced plan. Can be one of the textual values from XPlanung 6.x "XP_BesondereArtDerBaulNutzung":
+			1000 (Kleinsiedlungsgebiet): Kleinsiedlungsgebiet nach § 2 BauNVO. 
+			1100 (ReinesWohngebiet): Reines Wohngebiet nach § 3 BauNVO. 
+			1200 (AllgWohngebiet): Allgemeines Wohngebiet nach § 4 BauNVO. 
+			1300 (BesonderesWohngebiet): Gebiet zur Erhaltung und Entwicklung der Wohnnutzung (Besonderes Wohngebiet) nach § 4a BauNVO. 
+			1400 (Dorfgebiet): Dorfgebiet nach $ 5 BauNVO. 
+			1500 (Mischgebiet): Mischgebiet nach $ 6 BauNVO. 
+			1550 (UrbanesGebiet): Urbanes Gebiet nach § 6a BauNVO.
+			1600 (Kerngebiet): Kerngebiet nach § 7 BauNVO. 
+			1700 (Gewerbegebiet): Gewerbegebiet nach § 8 BauNVO. 
+			1800 (Industriegebiet): Industriegebiet nach § 9 BauNVO. 
+			2000 (SondergebietErholung): Sondergebiet, das der Erholung dient nach § 10 BauNVO von 1977 und 1990. 
+			2100 (SondergebietSonst): Sonstiges Sondergebiet nach§ 11 BauNVO 1977 und 1990; z.B. Klinikgebiet. 
+			3000 (Wochenendhausgebiet): Wochenendhausgebiet nach §10 der BauNVO von 1962 und 1968. 
+			4000 (Sondergebiet): Sondergebiet nach §11der BauNVO von 1962 und 1968.
+			9999 (SonstigesGebiet): Sonstiges Gebiet
+			</documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="buildingType" nillable="false" type="gml:ReferenceType">
+		  <annotation>
+			<documentation>
+			The allowed building types according to the referenced plan. Can be one of the textual values from XPlanung 6.x "BP_BebauungsArt":
+			1000 (Einzelhaeuser): Nur Einzelhäuser zulässig. 
+			2000 (Doppelhaeuser): Nur Doppelhäuser zulässig. 
+			3000 (Hausgruppen): Nur Hausgruppen zulässig. 
+			4000 (EinzelDoppelhaeuser): Nur Einzel- oder Doppelhäuser zulässig. 
+			5000 (EinzelhaeuserHausgruppen): Nur Einzelhäuser oder Hausgruppen zulässig. 
+			6000 (DoppelhaeuserHausgruppen): Nur Doppelhäuser oder Hausgruppen zulässig. 
+			7000 (Reihenhaeuser): Nur Reihenhäuser zulässig.
+			</documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="roofType" nillable="false" type="gml:ReferenceType">
+		  <annotation>
+			<documentation>
+			The allowed roof type(s) of this building. Can be one of the textual values from XPlanung 6.x "BP_Dachgestaltung":
+			1000 (Flachdach)
+			2100 (Pultdach)
+			2200 (VersetztesPultdach)
+			3100 (Satteldach)
+			3200 (Walmdach)
+			3300 (Krueppelwalmdach) 
+			3400 (Mansarddach)
+			3500 (Zeltdach) 
+			3600 (Kegeldach) 
+			3700 (Kuppeldach) 
+			3800 (Sheddach) 
+			3900 (Bogendach) 
+			4000 (Turmdach) 
+			5000 (Mischform) 
+			9999 (SonstigeDachform) 
+			</documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="floorAreaToParcelAreaRatioMax" nillable="false" type="double">
+		  <annotation>
+			<documentation>
+		      The allowed maximum ratio of the gross floor area of the buildings on this parcel to the parcel area (in German: Geschossflächenzahl/GFZ) 
+		    </documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="volumeToParcelAreaRatioMax" nillable="false" type="double">
+		  <annotation>
+		    <documentation>
+		      The allowed maximum ratio of the volume of the buildings on this parcel to the parcel area (in German: Baumassenzahl/BMZ) 
+			</documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="footprintToParcelAreaRatioMax" nillable="false" type="double">
+			<annotation>
+			  <documentation>
+				The allowed maximum ratio of the footprint of the buildings on this parcel to the parcel area (in German: Grundflächenzahl/GRZ) 
+			  </documentation>
+			</annotation>
+		  </element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="fullLevelsAboveGroundMax" nillable="false" type="integer">
+			<annotation>
+			  <documentation>
+				The allowed maximum number of full levels above ground (in German: Maximal zulässige Zahl der oberirdischen Vollgeschosse/Z) 
+			  </documentation>
+			</annotation>
+		  </element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="floorAreaToParcelAreaRatioMin" nillable="false" type="double">
+		  <annotation>
+		    <documentation>
+		      The allowed mimimum ratio of the gross floor area of the buildings on this parcel to the parcel area (in German: Geschossflächenzahl/GFZ) 
+			</documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="volumeToParcelAreaRatioMin" nillable="false" type="double">
+		  <annotation>
+			<documentation>
+		      The allowed minimum ratio of the volume of the buildings on this parcel to the parcel area (in German: Baumassenzahl/BMZ) 
+		    </documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="footprintToParcelAreaRatioMin" nillable="false" type="double">
+		  <annotation>
+			<documentation>
+		      The allowed minimum ratio of the footprint of the buildings on this parcel to the parcel area (in German: Grundflächenzahl/GRZ) 
+		    </documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="fullLevelsAboveGroundMin" nillable="false" type="integer">
+		  <annotation>
+			<documentation>
+		      The allowed minimum number of full levels above ground (in German: Maximal zulässige Zahl der oberirdischen Vollgeschosse/Z) 
+		    </documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="eaveHeightMax" nillable="false" type="double">
+		  <annotation>
+			<documentation>
+			  The allowed maximum eave height in m (in German: Maximal zulässige Traufhöhe) 
+		    </documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="ridgeHeightMax" nillable="false" type="double">
+		  <annotation>
+			<documentation>
+			  The allowed maximum ridge height in m (in German: Maximal zulässige Firsthöhe) 
+		    </documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="plan" nillable="true" type="gml:ReferenceType">
+		  <annotation>
+		    <documentation>
+		      A reference to the pgio:BPlan object that defines these regulation values. 
+			</documentation>
+		  </annotation>
+		</element>
+	</sequence>
+  </complexType>
+
+  <complexType name="FPlanRegulationsPropertyType">
+    <sequence minOccurs="0">
+      <element ref="pgio:FPlanRegulations" maxOccurs="1" />
+    </sequence>
+  </complexType>
+  <element name="FPlanRegulations" type="pgio:FPlanRegulationsType">
+    <annotation>
+      <documentation>
+        A set of regulations, derived from the respective XPlanung 6.x Feature Types from the Modellbereich FP_Plan.FP_Bebauungsflaeche, mostly FP_BebauungsFlaeche
+	  </documentation>
+    </annotation>
+  </element>
+  <complexType name="FPlanRegulationsType">
+    <sequence>
+		<element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="useTypes" nillable="false" type="gml:ReferenceType">
+		  <annotation>
+			<documentation>
+			The allowed use types according to the referenced plan. Can be one of the textual values from XPlanung 6.x "XP_AllgArtDerBaulNutzung":
+			1000 (WohnBauflaeche): Wohnbaufläche nach §1 Abs. (1) BauNVO 
+			2000 (GemischteBauflaeche): Gemischte Baufläche nach §1 Abs. (1) BauNVO. 
+			3000 (GewerblicheBauflaeche): Gewerbliche Baufläche nach §1 Abs. (1) BauNVO. 
+			4000 (SonderBauflaeche): Sonderbaufläche nach §1 Abs. (1) BauNVO. 
+			9999 (SonstigeBauflaeche): Sonstige Baufläche
+			</documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="specificUseType" nillable="false" type="gml:ReferenceType">
+		  <annotation>
+			<documentation>
+			The allowed specific use types according to the referenced plan. Can be one of the textual values from XPlanung 6.x "XP_BesondereArtDerBaulNutzung":
+			1000 (Kleinsiedlungsgebiet): Kleinsiedlungsgebiet nach § 2 BauNVO. 
+			1100 (ReinesWohngebiet): Reines Wohngebiet nach § 3 BauNVO. 
+			1200 (AllgWohngebiet): Allgemeines Wohngebiet nach § 4 BauNVO. 
+			1300 (BesonderesWohngebiet): Gebiet zur Erhaltung und Entwicklung der Wohnnutzung (Besonderes Wohngebiet) nach § 4a BauNVO. 
+			1400 (Dorfgebiet): Dorfgebiet nach $ 5 BauNVO. 
+			1500 (Mischgebiet): Mischgebiet nach $ 6 BauNVO. 
+			1550 (UrbanesGebiet): Urbanes Gebiet nach § 6a BauNVO.
+			1600 (Kerngebiet): Kerngebiet nach § 7 BauNVO. 
+			1700 (Gewerbegebiet): Gewerbegebiet nach § 8 BauNVO. 
+			1800 (Industriegebiet): Industriegebiet nach § 9 BauNVO. 
+			2000 (SondergebietErholung): Sondergebiet, das der Erholung dient nach § 10 BauNVO von 1977 und 1990. 
+			2100 (SondergebietSonst): Sonstiges Sondergebiet nach§ 11 BauNVO 1977 und 1990; z.B. Klinikgebiet. 
+			3000 (Wochenendhausgebiet): Wochenendhausgebiet nach §10 der BauNVO von 1962 und 1968. 
+			4000 (Sondergebiet): Sondergebiet nach §11der BauNVO von 1962 und 1968.
+			9999 (SonstigesGebiet): Sonstiges Gebiet
+			</documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="floorAreaToParcelAreaRatioMax" nillable="false" type="double">
+		  <annotation>
+			<documentation>
+		      The allowed maximum ratio of the gross floor area of the buildings on this parcel to the parcel area (in German: Geschossflächenzahl/GFZ) 
+		    </documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="volumeToParcelAreaRatioMax" nillable="false" type="double">
+		  <annotation>
+		    <documentation>
+		      The allowed maximum ratio of the volume of the buildings on this parcel to the parcel area (in German: Baumassenzahl/BMZ) 
+			</documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="footprintToParcelAreaRatioMax" nillable="false" type="double">
+			<annotation>
+			  <documentation>
+				The allowed maximum ratio of the footprint of the buildings on this parcel to the parcel area (in German: Grundflächenzahl/GRZ) 
+			  </documentation>
+			</annotation>
+		  </element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="volumeToParcelAreaRatioMin" nillable="false" type="double">
+		  <annotation>
+			<documentation>
+		      The allowed minimum ratio of the volume of the buildings on this parcel to the parcel area (in German: Baumassenzahl/BMZ) 
+		    </documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="footprintToParcelAreaRatioMin" nillable="false" type="double">
+		  <annotation>
+			<documentation>
+		      The allowed minimum ratio of the footprint of the buildings on this parcel to the parcel area (in German: Grundflächenzahl/GRZ) 
+		    </documentation>
+		  </annotation>
+		</element>
+		<element form="unqualified" maxOccurs="1" minOccurs="0" name="plan" nillable="true" type="gml:ReferenceType">
+		  <annotation>
+		    <documentation>
+		      A reference to the FPlan object that defines these regulation values. 
+			</documentation>
+		  </annotation>
+		</element>
+	</sequence>
+  </complexType>
+  
+  <element name="Plan" substitutionGroup="gml:AbstractFeature" type="pgio:PlanType">
+    <annotation>
+      <documentation>
+        An abstract spatial plan, derived from the respective XPlan (e.g. BP_Plan, FP_Plan) types.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="PlanType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element form="unqualified" maxOccurs="1" minOccurs="0" name="entryIntoForce" nillable="false" type="date">
+			<annotation>
+			  <documentation>
+				The date when this plan entered into legal bindingness ("Inkrafttreten")
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="1" name="geometry" nillable="false" type="gml:SurfacePropertyType">
+			<annotation>
+			  <documentation>
+				The surface geometry of this plan (can have multiple parts/"Bereiche")
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="1" name="planName" nillable="false" type="string">
+			<annotation>
+			  <documentation>
+				The name of this plan.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="1" name="planNumber" nillable="false" type="string">
+			<annotation>
+			  <documentation>
+				The identifier of this plan. Can be derived from nummer or internalId, whichever is present and considered the permanent ID.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="texts" nillable="false" type="string">
+			<annotation>
+			  <documentation>
+				The textual parts of this plan.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="xplanReference" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				Resolvable reference to the corresponding XPlan object, if there is one, e.g. through a GetFeatureByID request.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="1" name="sourceOfParams" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The source of the parameters described in this plan. Can be one of the following:
+				- pgio:SourceOfParams:XPlanung (meaning the values are exact)
+				- pgio:SourceOfParams:CityGMLOrINSPIRE (meaning that the values are derived from the respective enumerations and may contain mismatches)
+				- pgio:SourceOfParams:OtherStructuredData (meaning there may be other definitions used)
+				- pgio:SourceOfParams:AutomatedExtraction (meaning there may be errors in the values, because these were extracted from raster plans and similar unstructured data using automated methods)
+				- pgio:SourceOfParams:Unknown (meaning the source in not documented)
+			  </documentation>
+			</annotation>
+		  </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+  <element name="BPlan" substitutionGroup="pgio:Plan" type="pgio:BPlanType">
+    <annotation>
+      <documentation>
+        A Development plan ("Bauleitplan"), derived from XPlanung 6.x BP_Plan.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="BPlanType">
+    <complexContent>
+      <extension base="pgio:PlanType">
+        <sequence>
+		  <element form="unqualified" maxOccurs="unbounded" minOccurs="0" name="planningMunicipality" nillable="false" type="string">
+			<annotation>
+			  <documentation>
+				The ISO country code prefixed municipality key of the municipality/ies that is/are responsible for this plan. Derived from *_Plan.planaufstellendeGemeinde. For Germany, given as an "AGS" (Amtliche Gemeindeschlüssel, see https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/_inhalt.html).
+				Example: DE08111000
+			  </documentation>
+			</annotation>
+		  </element>
+          <element form="unqualified" maxOccurs="1" minOccurs="0" name="legalBase" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The legal base of this BPlan, e.g. a version of BauNVO. Allowed values are the textual values from XPlanung 6.x XP_GesetzlicheGrundlage.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="legalState" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The legal state of this plan. Allowed values are the textual values from XPlanung 6.x BP_Rechtsstand.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="bplanType" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The specific type of this BPlan. Allowed values are the textual values from XPlanung 6.x BP_PlanArt.
+			  </documentation>
+			</annotation>
+		  </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+  <element name="FPlan" substitutionGroup="pgio:Plan" type="pgio:FPlanType">
+    <annotation>
+      <documentation>
+        A land use plan ("Flächennutzungsplan"), derived from XPlanung 6.x FP_Plan.
+      </documentation>
+    </annotation>
+  </element>
+  <complexType name="FPlanType">
+    <complexContent>
+      <extension base="pgio:PlanType">
+        <sequence>
+          <element form="unqualified" maxOccurs="1" minOccurs="0" name="planningAuthority" nillable="false" type="string">
+			<annotation>
+			  <documentation>
+				The ISO country code prefixed key of the authority that is responsible for this plan. For Germany, given as the respective part of the "AGS" (Amtliche Gemeindeschlüssel, see https://www.destatis.de/DE/Themen/Laender-Regionen/Regionales/Gemeindeverzeichnis/_inhalt.html).
+				Example: DE0811 for Germany (DE) - Baden Württemberg (08) - Regierungspräsidium Stuttgart (11)
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="legalBase" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The legal base of this BPlan, e.g. a version of BauNVO. Allowed values are the textual values from XPlanung 6.x XP_GesetzlicheGrundlage.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="legalState" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The legal state of this plan. Allowed values are the textual values from XPlanung 6.x FP_Rechtsstand.
+			  </documentation>
+			</annotation>
+		  </element>
+		  <element form="unqualified" maxOccurs="1" minOccurs="0" name="bplanType" nillable="false" type="gml:ReferenceType">
+			<annotation>
+			  <documentation>
+				The specific type of this FPlan. Allowed values are the textual values from XPlanung 6.x FP_PlanArt.
+			  </documentation>
+			</annotation>
+		  </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  
+</schema>
